@@ -1,0 +1,71 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+
+df = pd.read_csv('Admission_Predict.csv')
+df.head()
+
+
+
+//1. Check for duplicate rows and remove it
+duplicate_rows = df.duplicated()
+print("Number of duplicate rows:", duplicate_rows.sum())
+
+# Remove duplicate rows
+df = df.drop_duplicates()
+
+
+
+//2. Plot heat map for the continuous data.
+
+# Select continuous columns for the heatmap
+continuous_columns = ['GRE Score', 'TOEFL Score', 'University Rating', 'SOP', 'LOR ', 'CGPA', 'Research', 'Chance of Admit ']
+
+# Create a correlation matrix
+correlation_matrix = df[continuous_columns].corr()
+
+# Plot the heatmap
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+plt.title("Correlation Heatmap")
+plt.show()
+
+
+
+
+
+//3. Check for null/Nan values and replace them with appropriate values:
+# Check for null values
+null_values = df.isnull().sum()
+print("Null values:\n", null_values)
+
+# Replace null values with appropriate values (e.g., mean, median, etc.)
+df = df.fillna(df.mean())
+
+
+
+
+
+
+//4. Consider the column with the highest correlation in the dataset to build a linear regression model to predict the chance of admission:
+
+from sklearn.linear_model import LinearRegression
+
+# Select the column with the highest correlation (e.g., CGPA in this example)
+feature_column = 'CGPA'
+
+# Prepare the data for linear regression
+X = df[[feature_column]]
+y = df['Chance of Admit ']
+
+# Build the linear regression model
+model = LinearRegression()
+model.fit(X, y)
+
+# Make predictions
+predicted_chance_of_admit = model.predict(X)
+
+
+
