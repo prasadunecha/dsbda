@@ -10,9 +10,10 @@ df = pd.read_csv("Cleavland.csv",header=None)
 df.head()
 
 
-
+//heart
 df.columns = ['age','sex','cp','trestbps','chol','fbs','restecg','thalach','exang','oldpeak','slope','ca','thal','num']
 df.head()
+
 
 
 df.isnull().sum().sum()
