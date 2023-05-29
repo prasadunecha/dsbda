@@ -1,0 +1,88 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns 
+import matplotlib.pyplot as plt
+
+
+#reading the datasets
+# Switzerland hung
+df = pd.read_csv("Cleavland.csv",header=None)
+df.head()
+
+
+
+df.columns = ['age','sex','cp','trestbps','chol','fbs','restecg','thalach','exang','oldpeak','slope','ca','thal','num']
+df.head()
+
+
+df.isnull().sum().sum()
+
+
+(df=='?').sum().sum()
+
+df = df.replace('?', np.nan)
+df = df.dropna()
+
+
+//1)HISTOGRAM
+
+plt.figure(figsize=(8, 6))
+plt.hist(df['age'], bins=10, color='skyblue')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.title('Age Distribution')
+plt.show()
+
+
+//2)DOT PLOTS
+
+plt.figure(figsize=(8, 6))
+sns.stripplot(x='cp', y='trestbps', data=df, jitter=True)
+plt.xlabel('Chest Pain Type')
+plt.ylabel('Resting Blood Pressure')
+plt.title('Chest Pain vs. Resting Blood Pressure')
+plt.show()
+
+//3)BAR PLOT
+
+plt.figure(figsize=(8, 6))
+df['num'].value_counts().plot(kind='bar', color='lightgreen')
+plt.xlabel('Heart Disease')
+plt.ylabel('Frequency')
+plt.title('Heart Disease Distribution')
+plt.show()
+
+//4)LINE CHARTS
+
+plt.figure(figsize=(8, 6))
+plt.plot(df['thalach'], color='purple')
+plt.xlabel('Index')
+plt.ylabel('Heart Rate')
+plt.title('Heart Rate Over Time')
+plt.show()
+
+//5)MULTIVARATE ANALYSIS USING SCATTER
+
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x='age', y='chol', data=df, hue='num')
+plt.xlabel('Age')
+plt.ylabel('Cholesterol')
+plt.title('Age vs. Cholesterol')
+plt.show()
+
+//6)PIE CHART
+
+plt.figure(figsize=(8, 6))
+df['sex'].value_counts().plot(kind='pie', autopct='%1.1f%%', colors=['lightblue', 'lightpink'])
+plt.ylabel('')
+plt.title('Sex Distribution')  # Objective: Compare the distribution of sexes in the dataset
+plt.show()
+
+//7)BOX PLOT
+
+plt.figure(figsize=(8, 6))
+sns.boxplot(x='cp', y='chol', data=df)
+plt.xlabel('Chest Pain Type')
+plt.ylabel('Cholesterol')
+plt.title('Chest Pain vs. Cholesterol')  
+plt.show()
