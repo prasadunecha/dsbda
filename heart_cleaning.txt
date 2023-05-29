@@ -1,0 +1,72 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler,LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+import warnings
+warnings.filterwarnings('ignore')
+DataFrame=pd.read_csv('heart.csv')
+DataFrame
+
+
+//First
+
+DataFrame1=DataFrame.dropna()
+DataFrame1
+
+DataFrame2=DataFrame1.replace('?',pd.NA)
+DataFrame2
+
+DataFrame=DataFrame2[DataFrame2>=0]
+DataFrame
+
+//Second
+
+DataFrame.std()
+
+
+DataFrame.mean()
+
+Out=np.abs((DataFrame-DataFrame.mean())/DataFrame.std())
+lier=Out>3
+print(lier.sum())
+DataFrame=DataFrame[~lier.any(axis=1)]
+DataFrame
+
+
+
+//Three
+
+DataFrame.loc[DataFrame['sex']==1,'sex']='M'
+DataFrame.loc[DataFrame['sex']==0,'sex']='F'
+lb=LabelEncoder()
+DataFrame['sex']=lb.fit_transform(DataFrame['sex'])
+DataFrame
+
+//Four
+
+# X=DataFrame[:,:-1]
+# Y=DataFrame[:,-1]
+X=DataFrame.drop('target',axis=1)
+Y=DataFrame['target']
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.2,random_state=46)
+
+reg=LogisticRegression()
+reg.fit(X_train,Y_train)
+
+r1=reg.predict(X_test)
+r1
+
+knn=KNeighborsClassifier()
+knn.fit(X_train,Y_train)
+
+r2=knn.predict(X_test)
+r2
+
+acc1=accuracy_score(Y_test,r1)
+acc2=accuracy_score(Y_test,r2)
+
+print(acc1)
+print(acc2)
