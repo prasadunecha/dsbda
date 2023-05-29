@@ -1,0 +1,59 @@
+import pandas as pd
+import matplotlib.pyplot as mat
+import seaborn as sns
+DataFrame=pd.read_csv('adult.csv')
+DataFrame
+
+
+//adult
+df.columns = ['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country','50k']
+df.head()
+
+//HISTOGRAM
+col=['age','education-num','hours-per-week']
+DataFrame[col].hist(bins=10,figsize=(10,6))
+mat.tight_layout()
+mat.show()
+
+//DOT
+mat.plot(DataFrame['fnlwgt'],'ro')
+
+//BAR
+col=['age','education-num','hours-per-week']
+for c in col:
+    DataFrame[c].value_counts().plot(kind='bar')
+    mat.show()
+    
+ //LINE
+ col=['age','education-num','hours-per-week']
+for c in col:
+    mat.plot(DataFrame[c])
+    mat.show()
+    
+//SCATTER
+
+col=['education-num','hours-per-week']
+sns.scatterplot(data=DataFrame,x=col[0],y=col[1])
+mat.show()
+
+//PIE
+col=['count','Time']
+cnt=[240,120]
+mat.pie(cnt,labels=col)
+mat.show()
+
+//BOX
+sns.boxplot(data=DataFrame,x='hours-per-week',y='education-num')
+mat.plot()
+
+//SCATTER
+mat.scatter(data=DataFrame,x='education-num',y='capital-loss')
+mat.show()
+
+//BAR
+sns.barplot(data=DataFrame,x='education-num',y='capital-loss')
+mat.show()
+
+
+
+
