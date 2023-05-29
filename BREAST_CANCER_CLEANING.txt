@@ -1,0 +1,72 @@
+import numpy as np
+import pandas as pd
+df = pd.read_csv('./BreastCancerWc.csv',header=None)
+df.head()
+
+df.columns =['Sample code number', 'Clump Thickness', 'Uniformity of Cell Size', 'Uniformity of Cell Shape','Marginal Adhesion','Single Epithelial Cell Size','Bare Nuclei','Bland Chromatin','Normal Nucleoli','Mitoses','Class']
+df.head()
+
+
+
+(df.values == '?').sum()
+df = df.replace('?',np.nan)
+df.dropna(inplace=True)
+(df.values=='?').sum()
+
+
+
+//2. Error correcting(Outlier detection and removal)
+
+df=df.astype(float)
+
+
+# Using Z-Score
+
+def zscore_filter(data,threshold=3):
+    zscore = np.abs((data-data.mean())/data.std())
+    out = zscore > 3
+    data = data[~out.any(axis=1)]
+    
+    return data
+    
+
+df = zscore_filter(df)
+df.head()
+
+
+//3
+from sklearn.preprocessing import LabelEncoder
+df['Class'].unique()
+
+df.loc[df['Class']==2,'Class']='Y'
+df.loc[df['Class']==4,'Class']='N'
+
+df.head()
+
+le = LabelEncoder()
+le.fit(df['Class'])
+le.classes_
+
+df['Class'] = le.transform(df['Class'])
+df.head()
+
+
+//4. Build Data model using regression and Naïve Bayes methods and compare accuracy of benign and malignant tumors in Breast Cancer Dataset.
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+X = df.drop('Class', axis=1) 
+Y = df['Class']
+X_train, X_test, y_train, y_test = train_test_split(X,Y,test_size=0.3,random_state=42)
+reg = LogisticRegression()
+reg.fit(X_train,y_train)
+
+
+reg_pred = reg.predict(X_test)
+print("Accuracy of Regression: ",accuracy_score(y_test,reg_pred))
+
+navie = GaussianNB()
+navie.fit(X_train,y_train)
+navie_pred = navie.predict(X_test)
+print("Accuracy of NavieBayes: ",accuracy_score(y_test,navie_pred))
