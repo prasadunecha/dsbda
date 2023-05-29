@@ -1,0 +1,91 @@
+import numpy as np
+import pandas as pd
+df = pd.read_csv('Iris.csv',header=None)
+df.head()
+
+
+df.columns = ['SepalLengthCm','SepalWidthCm','PetalLengthCm','PetalWidthCm','Species']
+df.head()
+
+
+df['Species'].unique()
+
+
+
+//Data cleaning(Remove NA, ?, Negative values etc.)
+df[df == '?'].sum()
+
+df.isnull().sum().sum()
+
+df = df.replace('?', np.nan)  # Replace '?' values with NaN
+df = df.dropna()  # Remove rows with missing values
+
+//Data transformation
+
+from sklearn.preprocessing import LabelEncoder,StandardScaler
+le = LabelEncoder()
+le.fit(df['Species'])
+le.classes_
+
+df['Species'] = le.transform(df['Species'])
+df.head()
+
+
+//Error correcting(Outlier detection and removal)
+# The Z-score, also known as the standard score, is a statistical measure that quantifies 
+# how many standard deviations a data point is away from the mean of a distribution. 
+# It is a way to standardize and compare values across different distributions.
+
+def remove_outliers_zscore(data, threshold=3):
+    z_scores = np.abs((data - data.mean()) / data.std())  # Calculate Z-scores
+    
+    out = z_scores > 3
+    
+    data = data[~out.any(axis=1)]
+    
+    return data
+    
+filtered_data = remove_outliers_zscore(df)
+
+
+filtered_data.shape
+
+
+
+
+//Build Data model using regression and Naïve Bayes methods and compare accuracy of Iris Species Prediction.
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+# Split the data into training and testing sets
+X = df[['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']]
+y = df['Species']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# Build a logistic regression model
+logreg = LogisticRegression()
+logreg.fit(X_train, y_train)
+
+
+# Make predictions on the test set using the logistic regression model
+y_pred_logreg = logreg.predict(X_test)
+
+# Calculate accuracy for logistic regression model
+accuracy_logreg = accuracy_score(y_test, y_pred_logreg)
+
+accuracy_logreg
+
+# Build a Naïve Bayes model
+naive_bayes = GaussianNB()
+naive_bayes.fit(X_train, y_train)
+
+# Make predictions on the test set using the Naïve Bayes model
+y_pred_nb = naive_bayes.predict(X_test)
+# Calculate accuracy for Naïve Bayes model
+accuracy_nb = accuracy_score(y_test, y_pred_nb)
+accuracy_nb
+
+# Compare the accuracies of the two models
+print("Accuracy - Logistic Regression:", accuracy_logreg)
+print("Accuracy - Naïve Bayes:", accuracy_nb)
