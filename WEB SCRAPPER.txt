@@ -1,0 +1,66 @@
+import requests
+from bs4 import BeautifulSoup as bs
+import pandas as pd
+import numpy as np
+
+
+
+request1=requests.get("https://www.flipkart.com/noise-icon-2-bluetooth-calling-1-8-display-ai-voice-assistant-60-sports-mode-smartwatch/p/itmfa97e2fcabed9?pid=SMWGEH7VGYMGCP3V&lid=LSTSMWGEH7VGYMGCP3VTODMR3&marketplace=FLIPKART&store=ajy%2Fbuh&spotlightTagId=BestsellerId_ajy%2Fbuh&srno=b_1_1&otracker=browse&fm=organic&iid=7f807457-16c0-4868-985d-053737a9cdcb.SMWGEH7VGYMGCP3V.SEARCH&ppt=browse&ppn=browse&ssid=r1rzrnr69c0000001685173052714")
+request1.content
+
+
+
+soup=bs(request1.text,'html.parser')
+
+
+
+reviews=soup.findAll('div',{'class':'t-ZTKy'})
+all_reviews=[]
+for review in reviews:
+    reviewText=review.get_text().replace('READ MORE',"").strip()
+    all_reviews.append(reviewText)
+    print(reviewText+"\n\n")
+
+
+
+ratings=soup.findAll('div',{"class":"_1BLPMq"})
+all_ratings=[]
+for rating in ratings:
+    all_ratings.append(rating.get_text())
+all_ratings
+
+
+
+tags=soup.findAll('p',{'class':'_2-N8zT'})
+all_tags=[]
+for tag in tags:
+    all_tags.append(tag.get_text())
+all_tags
+
+
+
+cus_names=soup.findAll('p',{'class':'_2sc7ZR _2V5EHH'})
+all_cus_names=[]
+for cus_name in cus_names:
+    all_cus_names.append(cus_name.get_text())
+all_cus_names
+
+
+
+data={
+    "names":all_cus_names,
+    "ratings":all_ratings,
+    "tags":all_tags,
+    "reviews":all_reviews,
+}
+data
+
+
+
+pd.set_option('display.max_colwidth',None)
+df=pd.DataFrame(data)
+df
+
+
+pd.set_option('display.max_colwidth',None)
+df.to_csv('PS32.csv')
