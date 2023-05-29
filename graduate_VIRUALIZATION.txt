@@ -1,0 +1,40 @@
+import pandas as pd
+import matplotlib.pyplot as mat
+import seaborn as sns
+DataFrame=pd.read_csv('Admission_Predict_Ver1.1.csv')
+DataFrame
+
+//Serial No.	GRE Score	TOEFL Score	University Rating	SOP	LOR	CGPA	Research	Chance of Admit
+
+
+
+//HISTOGRAM
+
+col=['GRE Score','TOEFL Score']
+DataFrame[col].hist(bins=10,figsize=(10,6))
+mat.show()
+
+//DOT
+dt=[0,1,3,4,2,5,6]
+mat.plot(dt,'ro')
+mat.show()
+
+//BAR
+sns.barplot(DataFrame,x='SOP',y='TOEFL Score')
+mat.show()
+
+col=['SOP','TOEFL Score']
+for c in col:
+    DataFrame[c].value_counts().plot(kind='bar')
+    mat.show()
+    
+col=['SOP','Chance of Admit ']
+for c in col:
+    mat.plot(DataFrame[col])
+    mat.show()
+    
+    
+//SCATTER PLOT
+
+mat.scatter(data=DataFrame,x='SOP',y='Chance of Admit ')
+mat.show()
