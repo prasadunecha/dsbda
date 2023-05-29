@@ -1,0 +1,74 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler,LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB,MultinomialNB
+from sklearn.metrics import accuracy_score
+import warnings
+warnings.filterwarnings('ignore')
+
+
+df=pd.read_csv('hepatitis.csv')
+df
+
+
+cols=['CLASS','AGE','SEX','STEROID','ANTIVIRALS','FATIGUE','MALAISE','ANOREXIA','LIVER BIG','LIVER FIRM','SPLEEN PALPABLE','SPIDERS','ASCITES','VARICES','BILIRUBIN','ALK PHOSPHATE','SGOT','ALBUMIN','PROTIME','HISTOLOGY']
+df.columns=cols
+df
+
+
+df.isna().sum()
+
+df.dropna(inplace=True)
+df
+
+df.replace('?',np.nan,inplace=True)
+df
+
+
+df.replace('NaN',df.mean(),inplace=True)
+df
+
+
+
+df.dropna(inplace=True)
+df=df.astype(float)
+df
+
+
+zv=np.abs((df-df.mean())/df.std())
+out=zv >3
+df=df[~out.any(axis=1)]
+df
+
+
+
+X=df.drop('HISTOLOGY',axis=1)
+y=df['HISTOLOGY']
+x_train,x_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=46)
+reg=LogisticRegression()
+reg.fit(x_train,y_train)
+
+
+a1=reg.predict(x_test)
+a1
+
+nvg=MultinomialNB()
+nvg.fit(x_train,y_train)
+
+a2=nvg.predict(x_test)
+a2
+
+nvgg=GaussianNB()
+nvgg.fit(x_train,y_train)
+
+a3=nvgg.predict(x_test)
+a3
+
+z1=accuracy_score(y_test,a1)
+z2=accuracy_score(y_test,a2)
+z3=accuracy_score(y_test,a3)
+print(z1)
+print(z2)
+print(z3)
