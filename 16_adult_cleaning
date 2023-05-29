@@ -1,0 +1,117 @@
+import pandas as pd
+columns=['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country','income']
+df=pd.read_csv('adult.csv',header=None)
+df.columns=columns
+df
+
+
+headers=df.columns
+headers
+
+df_null=df.dropna()
+df_null
+
+
+datatype=df.dtypes
+datatype
+
+df=df[~(df=='?').any(axis=1)]
+df
+
+
+remove_negative=['age','fnlwgt','education-num','capital-gain','capital-loss','hours-per-week' ]
+
+for column_name in remove_negative:
+    df=df[df[column_name]>=0]
+df
+
+
+columns=['age','fnlwgt','education-num','capital-gain','capital-loss','hours-per-week' ]
+
+zscore_threshold = 3
+
+
+import numpy as np
+for column in columns:
+    zscores=(df[column]-df[column].mean())/df[column].std()
+    outliers=np.abs(zscores)>zscore_threshold
+    df=df[~outliers]
+    
+df
+
+
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+cat_columns = ['workclass','education','marital-status','occupation','relationship','race','sex','native-country','income']
+               
+for column in cat_columns:
+    le = LabelEncoder()
+    df[column] = le.fit_transform(df[column])
+df
+
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+
+
+feature_columns=['age','fnlwgt','education-num','capital-gain','capital-loss','hours-per-week' ]
+
+target_column='income'
+
+
+X_train, X_test, y_train, y_test = train_test_split(df[feature_columns], df[target_column], test_size=0.2, random_state=42)
+reg_model = LogisticRegression()
+reg_model.fit(X_train, y_train)
+
+
+reg_predictions = reg_model.predict(X_test)
+reg_predictions
+
+print("Regression Model Accuracy:", reg_accuracy)
+
+nb_model = GaussianNB()
+nb_model.fit(X_train, y_train)
+
+nb_predictions = nb_model.predict(X_test)
+nb_accuracy = accuracy_score(y_test, nb_predictions)
+print("Naïve Bayes Model Accuracy:", nb_accuracy)
+
+if reg_accuracy > nb_accuracy:
+    print("Regression Model has higher accuracy:", reg_accuracy)
+elif nb_accuracy > reg_accuracy:
+    print("Naïve Bayes Model has higher accuracy:", nb_accuracy)
+else:
+    print("Both models have the same accuracy:", reg_accuracy)
+    
+    
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+reg_cm = confusion_matrix(y_test, reg_predictions)
+
+print("Confusion Matrix for Regression Model:")
+print(reg_cm)
+
+
+nb_cm = confusion_matrix(y_test, nb_predictions)
+
+print("Confusion Matrix for Naïve Bayes Model:")
+print(nb_cm)
+
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(reg_cm, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.title('Confusion Matrix - Regression Model')
+plt.show()
+
+
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(nb_cm, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.title('Confusion Matrix - Naïve Bayes Model')
+plt.show()
