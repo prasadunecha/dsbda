@@ -1,0 +1,59 @@
+import numpy as np
+import pandas as pd
+#seperator is semicolon
+df = pd.read_csv("dataset_Facebook.csv",sep=";") 
+df.head()
+
+
+
+
+Create data subsets for type of post
+df_photo=df[df["Type"]=="Photo"]
+df_photo.head(5)
+
+creating a subset of type=status
+df_status=df[df["Type"]=="Status"]
+df_status.head(5)
+
+
+
+Merge two subsets
+merging subsets of photos and status
+df_merged_ps=pd.concat([df_photo,df_status])
+df_merged_ps
+
+
+Sort Data on Page Total Likes
+#sorting by the column by like
+df_sort_like = df.sort_values(by=["like"])
+df_sort_like.head(5)
+
+
+Transposing Data
+#transposing the dataset basically means interchanging the rows and columns
+
+df_transpose = df.transpose()
+df_transpose
+
+
+Shape and Reshape data
+# adding an index column to provide a unique value to each row entry to further melt and unmelt the data
+
+df['index'] = range(1,len(df)+1)
+df.head()
+
+
+Melting Data to long format
+df_melted=pd.melt(df,id_vars=['Type','Category'],value_name='value',var_name='Metrics')
+df_melted
+
+# melting the data usin10g melt()
+
+df_melted = pd.melt(df, id_vars='index',  value_vars='Total Interactions')
+df_melted
+
+
+
+Casting data to wide format
+casting = pd.pivot_table(df,index=['Type','Category'],values='like', fill_value = 0)
+casting.head()
