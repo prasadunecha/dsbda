@@ -69,3 +69,41 @@ predicted_chance_of_admit = model.predict(X)
 
 
 
+5. Create data subsets by making classes for the chance of admission:
+# Define the class intervals
+class_intervals = [0, 0.5, 0.75, 1]
+
+# Create the classes for chance of admission
+df['Admission Class'] = pd.cut(df['Chance of Admit '], bins=class_intervals, labels=['Not Admitted', 'Might Get Admitted', '
+
+
+
+
+6. Merge two subsets:
+# merged_df = pd.concat([df1, df2], axis=0)
+
+
+
+
+7. Sort data using GRE, TOEFL, and University rating:
+sorted_df = df.sort_values(by=['GRE Score', 'TOEFL Score', 'University Rating'])
+sorted_df.head()
+
+
+
+8. Transpose the data:
+transposed_df = df.transpose()
+transposed_df.head()
+
+
+
+9. Melting data to long format:
+melted_df = pd.melt(df, id_vars=['Serial No.'], value_vars=['GRE Score', 'TOEFL Score', 'University Rating', 'SOP', 'LOR ', 'CGPA', 'Research', 'Chance of Admit '], var_name='Variable', value_name='Value')
+melted_df.head()
+
+
+
+
+10. Casting data to wide format:
+wide_df = melted_df.pivot(index='Serial No.', columns='Variable', values='Value')
+wide_df.head()
